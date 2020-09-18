@@ -1,9 +1,9 @@
 tencent:
   auth:
-    corpid: "ww97xxx"
-    corpsecret: "iq2Iyxxxx"
-  agentid: "100xx0x"
+    corpid: "ww97xxx"        //企业微信的corpid
+    corpsecret: "iq2Iyxxxx"  //企业微信的corpxecret
+  agentid: "100xx0x"         //应用的agentid
   user:
-    - Ralap
+    - Ralap                  //接受告警的用户配置，可配置多个
     - xxx
-listenport: "9000"
+listenport: "9000"           //webhook监听端口
