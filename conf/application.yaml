@@ -1,0 +1,9 @@
+tencent:
+  auth:
+    corpid: "ww97xxx"
+    corpsecret: "iq2Iyxxxx"
+  agentid: "100xx0x"
+  user:
+    - Ralap
+    - xxx
+listenport: "9000"
