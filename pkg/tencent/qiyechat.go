@@ -129,7 +129,10 @@ func (conf *Config) ReadConfig(filename string) {
 			//os.Exit(0)
 		}
 	}
+	fmt.Println(string(file))
+	//fmt.Println(yaml.Unmarshal(file, &conf))
 	yaml.Unmarshal(file, &conf)
+
 }
 
 func MainFunc(conf Config) func(w http.ResponseWriter, r *http.Request) {
@@ -148,7 +151,7 @@ func MainFunc(conf Config) func(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	filename := "conf/application.yaml"
+	filename := "C:/code/DeepBlueMonitor/conf/application.yaml"
 	var conf Config
 	//str,_:=os.Getwd()
 	//fmt.Println(string(str))
@@ -156,5 +159,6 @@ func main() {
 	//fmt.Println(conf)
 	//fmt.Println(conf.Listenport)
 	http.HandleFunc("/alarm", MainFunc(conf))
+	fmt.Println(conf)
 	http.ListenAndServe(fmt.Sprintf(":%s", conf.Listenport), nil)
 }
