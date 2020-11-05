@@ -58,7 +58,6 @@ func SendMessage(M model.SkywalkInfo, conf model.Config) {
 	for _, v := range conf.Tencent.User {
 		user = v + "|" + user
 	}
-	//fmt.Println(user)
 	message["touser"] = user
 	message["msgtype"] = "text"
 	message["agentid"] = conf.Tencent.Agentid
