@@ -20,7 +20,7 @@
 package model
 
 import (
-	"fmt"
+	"errors"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
@@ -32,10 +32,18 @@ type AuthStr struct {
 	CorpSecret string `yaml:"corpsecret"`
 }
 
+type BuinessStruct struct {
+	CRM []string `yaml:"CRM"`
+	SSM []string `yaml:"SSM"`
+	DLM []string `yaml:"DLM"`
+	VX  []string `yaml:"VX"`
+}
+
 type TencentConfig struct {
-	Auth    AuthStr  `yaml:"auth"`
-	Agentid string   `yaml:"agentid"`
-	User    []string `yaml:"user"`
+	Auth         AuthStr       `yaml:"auth"`
+	Agentid      string        `yaml:"agentid"`
+	BusinessType BuinessStruct `yaml:"businesstype"`
+	User         []string      `yaml:"user"`
 }
 
 type Config struct {
@@ -66,16 +74,16 @@ type SkywalkInfo struct {
 }
 
 func (conf *Config) ReadConfig(filename string) {
-
 	file, err := ioutil.ReadFile(filename)
 	if err != nil {
 		if error, ok := err.(*os.PathError); ok {
 			log.Println(error.Op, "file not exist", error.Err)
 			panic(error.Error())
-			//os.Exit(0)
 		}
 	}
-	fmt.Println(string(file))
-	//fmt.Println(yaml.Unmarshal(file, &conf))
-	yaml.Unmarshal(file, &conf)
+	//fmt.Println(string(file))
+	err = yaml.Unmarshal(file, &conf)
+	if err != nil {
+		errors.New("config parase failed")
+	}
 }

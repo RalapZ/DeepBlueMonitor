@@ -20,23 +20,29 @@ package router
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/RalapZ/DeepBlueMonitor/common"
 	"github.com/RalapZ/DeepBlueMonitor/model"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"io/ioutil"
 	"net/http"
 )
 
-func MainFunc(conf model.Config) func(w http.ResponseWriter, r *http.Request) {
+func MainFunc1(conf model.Config) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		test, _ := ioutil.ReadAll(r.Body)
 		var DataInfo []model.SkywalkInfo
 		json.Unmarshal(test, &DataInfo)
 		//fmt.Println(&conf)
 		for _, Message := range DataInfo {
-			//corpid := "ww97af1eab5d2add3c"
-			//corpsecret := "iq2IyxRcY3oCHHTFg2U2o3UQGHzXIWkKIAgfKQFdhxw"
-			//SendMessage(corpid, corpsecret, Message,conf)
 			common.SendMessage(Message, conf)
 		}
 	}
+}
+
+func MainFunc(conf *model.Config) {
+	http.HandleFunc("/alarm", MainFunc1(*conf))
+	http.Handle("/metric", promhttp.Handler())
+	fmt.Printf("%#v", conf)
+	http.ListenAndServe(fmt.Sprintf(":%s", conf.Listenport), nil)
 }

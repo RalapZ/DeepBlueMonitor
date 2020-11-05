@@ -1,7 +1,7 @@
 package common
 
 import (
-	"github.com/RalapZ/DeepBlueMonitor/commandor"
+	"github.com/RalapZ/DeepBlueMonitor/command"
 	"testing"
 )
 
