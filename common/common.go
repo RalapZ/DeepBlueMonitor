@@ -29,29 +29,51 @@ import (
 	"net/http"
 )
 
-func TokenGet(CorpId string, CorpSecret string) string {
+func HttpRequest(HttpMethod string, Url string, data map[string]interface{}) ([]byte, error) {
+	//func HttpRequest(data map[string]interface{},Url string) ([]byte,error){
+	HeaderStr, err := json.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
 	client := &http.Client{}
+	req, err := http.NewRequest(HttpMethod, Url, bytes.NewReader(HeaderStr))
+	if err != nil {
+		return nil, err
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	return body, err
+}
+
+func TokenGet(CorpId string, CorpSecret string) (string, error) {
 	data := make(map[string]interface{})
 	data["corpid"] = CorpId
 	data["corpsecret"] = CorpSecret
-	HeaderStr, err := json.Marshal(data)
+	HttpMethod := "POST"
+	Url := "https://qyapi.weixin.qq.com/cgi-bin/gettoken"
+	respbody, err := HttpRequest(HttpMethod, Url, data)
 	if err != nil {
-		return "nil"
+		return "", err
 	}
-	req, _ := http.NewRequest("POST", "https://qyapi.weixin.qq.com/cgi-bin/gettoken", bytes.NewReader(HeaderStr))
-	defer req.Body.Close()
-	resp, _ := client.Do(req)
-	body, _ := ioutil.ReadAll(resp.Body)
 	qistu := model.QiYchatStu{}
-	_ = json.Unmarshal(body, &qistu)
-	return qistu.Access_token
+	err = json.Unmarshal(respbody, &qistu)
+	if err != nil {
+		return "", err
+	}
+	return qistu.Access_token, nil
 }
 
-func SendMessage(M model.SkywalkInfo, conf model.Config) {
+func SendMessage(M *model.SkywalkInfo, conf *model.Config) {
 	CorpId := conf.Tencent.Auth.CorpInfo
 	CorpSecret := conf.Tencent.Auth.CorpSecret
-	Token := TokenGet(CorpId, CorpSecret)
-	client := &http.Client{}
+	Token, err := TokenGet(CorpId, CorpSecret)
+	if err != nil {
+		panic(err.Error())
+	}
 	message := make(map[string]interface{})
 	//fmt.Println(&conf)
 	var user string
@@ -65,15 +87,10 @@ func SendMessage(M model.SkywalkInfo, conf model.Config) {
 	message["text"] = map[string]interface{}{
 		"content": str,
 	}
-	log.Println(str)
 	message["safe"] = "0"
-	Mdata, _ := json.Marshal(message)
-	urlR := "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=" + Token
-	req1, _ := http.NewRequest("POST", urlR, bytes.NewReader(Mdata))
-	defer req1.Body.Close()
-	//fmt.Println(req1.Header)
-	resp1, _ := client.Do(req1)
-	MMessage, _ := ioutil.ReadAll(resp1.Body)
-	//fmt.Println("=============")
-	fmt.Println(string(MMessage))
+	Url := "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=" + Token
+	log.Println(str)
+	HttpMethod := "POST"
+	HttpBody, _ := HttpRequest(HttpMethod, Url, message)
+	fmt.Println(string(HttpBody))
 }

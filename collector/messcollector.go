@@ -14,35 +14,11 @@
 //                   			            └──┴──┘       └──┴──┘  + + + +                          //
 //                   			      神兽出没               永无BUG                                 //
 //   Author: Ralap                                                                                  //
-//   Date  : 2020/11/05                                                                             //
+//   Date  : 2020/11/06                                                                             //
 //##################################################################################################//
-package router
 
-import (
-	"encoding/json"
-	"fmt"
-	"github.com/RalapZ/DeepBlueMonitor/common"
-	"github.com/RalapZ/DeepBlueMonitor/model"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"io/ioutil"
-	"net/http"
-)
+package collector
 
-func QiyeChatMessage(conf model.Config) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		test, _ := ioutil.ReadAll(r.Body)
-		var DataInfo []model.SkywalkInfo
-		json.Unmarshal(test, &DataInfo)
-		//fmt.Println(&conf)
-		for _, Message := range DataInfo {
-			common.SendMessage(&Message, &conf)
-		}
-	}
-}
+func MessageCollector() {
 
-func MainFunc(conf *model.Config) {
-	http.HandleFunc("/alarm", QiyeChatMessage(*conf))
-	http.Handle("/metric", promhttp.Handler())
-	fmt.Printf("%#v", conf)
-	http.ListenAndServe(fmt.Sprintf(":%s", conf.Listenport), nil)
 }

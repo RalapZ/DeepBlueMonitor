@@ -17,7 +17,6 @@ tencent:
 
   user:
 #接受告警的用户配置，可配置多个
-    - Ralap
-    - lanbing
+    - ZhuRongJia
 #webhook监听端口
 listenport: "9000"
