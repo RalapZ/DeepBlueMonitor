@@ -43,6 +43,6 @@ func QiyeChatMessage(conf model.Config) func(w http.ResponseWriter, r *http.Requ
 func MainFunc(conf *model.Config) {
 	http.HandleFunc("/alarm", QiyeChatMessage(*conf))
 	http.Handle("/metric", promhttp.Handler())
-	fmt.Printf("%#v", conf)
+	//fmt.Printf("%#v", conf)
 	http.ListenAndServe(fmt.Sprintf(":%s", conf.Listenport), nil)
 }
