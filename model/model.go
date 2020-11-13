@@ -21,6 +21,7 @@ package model
 
 import (
 	"errors"
+	"fmt"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
@@ -83,6 +84,7 @@ func (conf *Config) ReadConfig(filename string) {
 	}
 	//fmt.Println(string(file))
 	err = yaml.Unmarshal(file, &conf)
+	fmt.Printf("%#v", conf.Tencent.BusinessType)
 	if err != nil {
 		errors.New("config parase failed")
 	}

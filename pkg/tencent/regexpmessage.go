@@ -39,7 +39,7 @@ func StrRegexp(SrcStr string, RegexpStr []string) string {
 
 func main() {
 	RegexpStr := []string{"crm-", "ssm-", "dlm-", "wx-"}
-	SrcStr := "User in User to {GET}/interfaces/server/app/queryOrderInfo/app006/interAspect in wx-dmscloud-customer-service-prd1"
+	SrcStr := "User in User to {GET}/interfaces/server/app/queryOrderInfo/app006/wx-asdfasdf in wx-dmscloud-customer-service-prd1"
 	str := StrRegexp(SrcStr, RegexpStr)
 	fmt.Println(str)
 }

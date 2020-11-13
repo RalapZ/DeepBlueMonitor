@@ -32,6 +32,7 @@ import (
 func HttpRequest(HttpMethod string, Url string, data map[string]interface{}) ([]byte, error) {
 	//func HttpRequest(data map[string]interface{},Url string) ([]byte,error){
 	HeaderStr, err := json.Marshal(data)
+	fmt.Println(data)
 	if err != nil {
 		return nil, err
 	}
@@ -66,31 +67,67 @@ func TokenGet(CorpId string, CorpSecret string) (string, error) {
 	}
 	return qistu.Access_token, nil
 }
+func BusinessUser(buiness string, conf *model.Config) []string {
+	var user []string
+	switch buiness {
+	case "crm", "CRM":
+		user = conf.Tencent.BusinessType.CRM
+	case "ssm", "SSM":
+		user = conf.Tencent.BusinessType.SSM
+	case "dlm", "DLM":
+		user = conf.Tencent.BusinessType.SSM
+	case "VX", "vx":
+		user = conf.Tencent.BusinessType.VX
+	}
+	return user
+}
 
 func SendMessage(M *model.SkywalkInfo, conf *model.Config) {
 	CorpId := conf.Tencent.Auth.CorpInfo
 	CorpSecret := conf.Tencent.Auth.CorpSecret
 	Token, err := TokenGet(CorpId, CorpSecret)
+	bu := []string{"crm", "dlm", "ssm"}
+	fmt.Println(M.Name)
+	businessType, businessName, err := StrRegexp(M.Name, bu)
+	//businessType=strings.ToUpper(businessType)
+	//usertemp:=[]string{}
+	//switch businessType{
+	//case "crm","CRM":
+	//	usertemp=conf.Tencent.BusinessType.CRM
+	//case "dlm","DLM":
+	//	usertemp=conf.Tencent.BusinessType.DLM
+	//case "ssm","SSM":
+	//	usertemp=conf.Tencent.BusinessType.SSM
+	//case "vx","VX":
+	//	usertemp=conf.Tencent.BusinessType.VX
+	//}
+	//fmt.Println(usertemp)
+	//fmt.Println(conf.Tencent.BusinessType.)
 	if err != nil {
 		panic(err.Error())
 	}
-	message := make(map[string]interface{})
-	//fmt.Println(&conf)
-	var user string
-	for _, v := range conf.Tencent.User {
-		user = v + "|" + user
+	data := make(map[string]interface{})
+	var buinessuser string
+	usertemp := BusinessUser(businessType, conf)
+	fmt.Println(usertemp, businessName)
+	for _, v := range usertemp {
+		buinessuser = v + "|" + buinessuser
 	}
-	message["touser"] = user
-	message["msgtype"] = "text"
-	message["agentid"] = conf.Tencent.Agentid
+	//usertemp:=
+	data["touser"] = buinessuser
+	data["msgtype"] = "text"
+	data["agentid"] = conf.Tencent.Agentid
 	str := "服务名称:" + M.Name + "\n告警类型:" + M.Scope + "\n告警规则:" + M.RuleName + "" + "\n告警信息:" + M.AlarmMessage
-	message["text"] = map[string]interface{}{
+	data["text"] = map[string]interface{}{
 		"content": str,
 	}
-	message["safe"] = "0"
+	data["safe"] = "0"
 	Url := "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=" + Token
 	log.Println(str)
 	HttpMethod := "POST"
-	HttpBody, _ := HttpRequest(HttpMethod, Url, message)
-	fmt.Println(string(HttpBody))
+	HttpBody, err := HttpRequest(HttpMethod, Url, data)
+	if err != nil {
+		log.Println(err)
+	}
+	log.Println(string(HttpBody))
 }

@@ -8,11 +8,13 @@ tencent:
   agentid: "1000002"
   businesstype:
     CRM:
-      - ralap
+      - ZhuRongJia
     SSM:
-      - test
+      - ZhuRongJia
     DLM:
-      - myzone
+      - ZhuRongJia
+    VX:
+      - ZhuRongJia
 #      vx:
 
   user:

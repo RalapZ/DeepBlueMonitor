@@ -14,30 +14,23 @@
 //                   			            └──┴──┘       └──┴──┘  + + + +                          //
 //                   			      神兽出没               永无BUG                                 //
 //   Author: Ralap                                                                                  //
-//   Date  : 2020/11/05                                                                             //
+//   Date  : 2020/11/13                                                                             //
 //##################################################################################################//
-
-package command
+package common
 
 import (
-	"github.com/RalapZ/DeepBlueMonitor/model"
-	"github.com/RalapZ/DeepBlueMonitor/router"
-	"log"
-	"os"
+	"errors"
+	"regexp"
 )
 
-func Execute() {
-	filename := "C:/code/DeepBlueMonitor/conf/application.yaml"
-	var conf model.Config
-	conf.ReadConfig(filename)
-	//fmt.Println(conf)
-	file, _ := os.OpenFile("info.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
-	defer file.Close()
-	log.SetOutput(os.Stdout)
-	log.Println("asdfasdfasdf")
-	//file,_:=os.OpenFile("catalina.log",os.O_CREATE|os.O_APPEND|os.O_WRONLY,0644)
-	//defer file.Close()
-	//log.SetOutput(file)
-	//log.Fatal("asdfasdfasdfasdfasdfasdfaf")
-	router.MainFunc(&conf)
+func StrRegexp(SrcStr string, RegexpStr []string) (string, string, error) {
+	for _, buinesType := range RegexpStr {
+		re := "(^|\\s)" + buinesType + "[-,a-z,0-9]*"
+		restr := regexp.MustCompile(re)
+		FindStr := restr.FindAll([]byte(SrcStr), 1)
+		if len(FindStr) != 0 {
+			return buinesType, string(FindStr[0]), nil
+		}
+	}
+	return "", "", errors.New("not found")
 }
