@@ -75,6 +75,7 @@ type SkywalkInfo struct {
 }
 
 func (conf *Config) ReadConfig(filename string) {
+
 	file, err := ioutil.ReadFile(filename)
 	if err != nil {
 		if error, ok := err.(*os.PathError); ok {
@@ -84,7 +85,11 @@ func (conf *Config) ReadConfig(filename string) {
 	}
 	//fmt.Println(string(file))
 	err = yaml.Unmarshal(file, &conf)
-	fmt.Printf("%#v", conf.Tencent.BusinessType)
+	//fmt.Printf("%#v\n", conf.Tencent.BusinessType)
+
+	//fmt.Println("Bu",businessName)
+	fmt.Printf("%+v", conf.Tencent.BusinessType)
+	//for k,v:=conf.Tencent.BusinessType[]
 	if err != nil {
 		errors.New("config parase failed")
 	}

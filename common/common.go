@@ -82,13 +82,15 @@ func BusinessUser(buiness string, conf *model.Config) []string {
 	return user
 }
 
-func SendMessage(M *model.SkywalkInfo, conf *model.Config) {
+func SendMessage(M *model.SkywalkInfo, conf *model.Config, businessNameSlice []string) {
 	CorpId := conf.Tencent.Auth.CorpInfo
 	CorpSecret := conf.Tencent.Auth.CorpSecret
 	Token, err := TokenGet(CorpId, CorpSecret)
-	bu := []string{"crm", "dlm", "ssm"}
+	//bu := []string{"crm", "dlm", "ssm","vx"}
+	fmt.Println("SendMessage", businessNameSlice)
 	fmt.Println(M.Name)
-	businessType, businessName, err := StrRegexp(M.Name, bu)
+	businessType, businessName, err := StrRegexp(M.Name, businessNameSlice)
+	fmt.Println("StrRegexp", businessType, businessName)
 	//businessType=strings.ToUpper(businessType)
 	//usertemp:=[]string{}
 	//switch businessType{
@@ -114,16 +116,17 @@ func SendMessage(M *model.SkywalkInfo, conf *model.Config) {
 		buinessuser = v + "|" + buinessuser
 	}
 	//usertemp:=
+	data["businessName"] = businessName
 	data["touser"] = buinessuser
 	data["msgtype"] = "text"
 	data["agentid"] = conf.Tencent.Agentid
-	str := "服务名称:" + M.Name + "\n告警类型:" + M.Scope + "\n告警规则:" + M.RuleName + "" + "\n告警信息:" + M.AlarmMessage
+	str := "服务名称" + businessName + "\n告警名称:" + M.Name + "\n告警类型:" + M.Scope + "\n告警规则:" + M.RuleName + "" + "\n告警信息:" + M.AlarmMessage
 	data["text"] = map[string]interface{}{
 		"content": str,
 	}
 	data["safe"] = "0"
 	Url := "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=" + Token
-	log.Println(str)
+	//log.Println(str)
 	HttpMethod := "POST"
 	HttpBody, err := HttpRequest(HttpMethod, Url, data)
 	if err != nil {
