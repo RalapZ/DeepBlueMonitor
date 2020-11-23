@@ -86,17 +86,15 @@ func SendMessage(M *model.SkywalkInfo, conf *model.Config, businessNameSlice []s
 	CorpId := conf.Tencent.Auth.CorpInfo
 	CorpSecret := conf.Tencent.Auth.CorpSecret
 	Token, err := TokenGet(CorpId, CorpSecret)
-	//fmt.Println("SendMessage", businessNameSlice)
 	log.Printf("%#v", M)
 	businessType, businessName, err := StrRegexp(M.Name, businessNameSlice)
-	//fmt.Println("StrRegexp", businessType, businessName)
 	if err != nil {
 		panic(err.Error())
 	}
 	data := make(map[string]interface{})
 	var buinessuser string
 	usertemp := BusinessUser(businessType, conf)
-	fmt.Println(usertemp, businessName)
+	//fmt.Println(usertemp, businessName)
 	for _, v := range usertemp {
 		buinessuser = v + "|" + buinessuser
 	}
