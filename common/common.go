@@ -86,25 +86,10 @@ func SendMessage(M *model.SkywalkInfo, conf *model.Config, businessNameSlice []s
 	CorpId := conf.Tencent.Auth.CorpInfo
 	CorpSecret := conf.Tencent.Auth.CorpSecret
 	Token, err := TokenGet(CorpId, CorpSecret)
-	//bu := []string{"crm", "dlm", "ssm","vx"}
-	fmt.Println("SendMessage", businessNameSlice)
-	fmt.Println(M.Name)
+	//fmt.Println("SendMessage", businessNameSlice)
+	log.Printf("%#v", M)
 	businessType, businessName, err := StrRegexp(M.Name, businessNameSlice)
-	fmt.Println("StrRegexp", businessType, businessName)
-	//businessType=strings.ToUpper(businessType)
-	//usertemp:=[]string{}
-	//switch businessType{
-	//case "crm","CRM":
-	//	usertemp=conf.Tencent.BusinessType.CRM
-	//case "dlm","DLM":
-	//	usertemp=conf.Tencent.BusinessType.DLM
-	//case "ssm","SSM":
-	//	usertemp=conf.Tencent.BusinessType.SSM
-	//case "vx","VX":
-	//	usertemp=conf.Tencent.BusinessType.VX
-	//}
-	//fmt.Println(usertemp)
-	//fmt.Println(conf.Tencent.BusinessType.)
+	//fmt.Println("StrRegexp", businessType, businessName)
 	if err != nil {
 		panic(err.Error())
 	}
