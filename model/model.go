@@ -21,7 +21,6 @@ package model
 
 import (
 	"errors"
-	"fmt"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
@@ -70,16 +69,19 @@ type BuinessInfo struct {
 }
 
 type SkywalkInfo struct {
-	ScopeId      int       `json:scopeId`
-	Scope        string    `json:scope`
-	Name         string    `json:name`
-	Id0          string    `json:id0`
-	Id1          string    `json:id1`
-	RuleName     string    `json:ruleName`
-	AlarmMessage string    `json:alarmMessage`
-	StartTime    time.Time `json:startTime`
-	BInfo        BuinessInfo
+	ScopeId       int    `json:scopeId`
+	Scope         string `json:scope`
+	Name          string `json:name`
+	Id0           string `json:id0`
+	Id1           string `json:id1`
+	RuleName      string `json:ruleName`
+	AlarmMessage  string `json:alarmMessage`
+	StartTime     time.Time
+	Starttimerecv int64 `json:"startTime"`
+	BInfo         BuinessInfo
 }
+
+var CONF *Config
 
 func (conf *Config) ReadConfig(filename string) {
 	file, err := ioutil.ReadFile(filename)
@@ -90,8 +92,10 @@ func (conf *Config) ReadConfig(filename string) {
 		}
 	}
 	err = yaml.Unmarshal(file, &conf)
-	fmt.Printf("%+v", conf.Tencent.BusinessType)
+	CONF = conf
+	//fmt.Printf("%+v", conf.Tencent.BusinessType)
 	if err != nil {
 		errors.New("config parase failed")
 	}
+
 }

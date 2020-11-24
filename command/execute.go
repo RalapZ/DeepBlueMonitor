@@ -20,7 +20,8 @@
 package command
 
 import (
-	"fmt"
+	"context"
+	"github.com/RalapZ/DeepBlueMonitor/common"
 	"github.com/RalapZ/DeepBlueMonitor/model"
 	"github.com/RalapZ/DeepBlueMonitor/router"
 	"log"
@@ -29,24 +30,42 @@ import (
 	"strings"
 )
 
+var Conf model.Config
+
+func InitEsClient() {
+	var ctx = context.Background()
+	Url := []string{"http://10.10.8.151:9200/"}
+	common.ESClientConn(Url)
+	ESClient := common.ESClient
+	exists, err := ESClient.IndexExists(common.IndexName).Do(ctx)
+	if err != nil {
+		panic(err)
+	}
+	if !exists {
+		_, err := ESClient.CreateIndex(common.IndexName).BodyString(common.Mapping).Do(ctx)
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
 func Execute() {
+	//读取配置文件
 	filename := "C:/code/DeepBlueMonitor/conf/application.yaml"
-	var conf model.Config
 	var businessName []string
-	conf.ReadConfig(filename)
-	//fmt.Println(conf)
+	Conf.ReadConfig(filename)
+	//创建日志文件
 	file, _ := os.OpenFile("info.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
 	defer file.Close()
+	//初始化es客户端
+	InitEsClient()
 	log.SetOutput(os.Stdout)
-	log.Println("asdfasdfasdf")
 	//file,_:=os.OpenFile("catalina.log",os.O_CREATE|os.O_APPEND|os.O_WRONLY,0644)
 	//defer file.Close()
 	//log.SetOutput(file)
-	t := reflect.TypeOf(conf.Tencent.BusinessType)
+	t := reflect.TypeOf(Conf.Tencent.BusinessType)
 	for i := 0; i < t.NumField(); i++ {
 		businessName = append(businessName, strings.ToLower(t.Field(i).Name))
 	}
-	fmt.Println(businessName)
-
-	router.MainFunc(&conf, businessName)
+	router.MainFunc(&Conf, businessName)
 }

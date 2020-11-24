@@ -28,6 +28,8 @@ func init() {
 	fmt.Println("welcome to myzone ")
 }
 
+var ConfigMain string
+
 func main() {
 	command.Execute()
 }

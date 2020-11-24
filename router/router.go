@@ -29,11 +29,12 @@ import (
 )
 
 func QiyeChatMessage(conf model.Config, businessName []string) func(w http.ResponseWriter, r *http.Request) {
+	//temptest.Myzone()
 	return func(w http.ResponseWriter, r *http.Request) {
 		test, _ := ioutil.ReadAll(r.Body)
 		var DataInfo []model.SkywalkInfo
 		json.Unmarshal(test, &DataInfo)
-		//fmt.Println(&conf)
+		fmt.Printf("qiyechatmessage   %#v", DataInfo)
 		for _, Message := range DataInfo {
 			common.SendMessage(&Message, &conf, businessName)
 		}

@@ -31,6 +31,7 @@ import (
 
 func HttpRequest(HttpMethod string, Url string, data map[string]interface{}) ([]byte, error) {
 	//func HttpRequest(data map[string]interface{},Url string) ([]byte,error){
+	//fmt.Println("collector",command.Conf)
 	HeaderStr, err := json.Marshal(data)
 	fmt.Println(data)
 	if err != nil {
@@ -87,10 +88,14 @@ func SendMessage(M *model.SkywalkInfo, conf *model.Config, businessNameSlice []s
 	CorpSecret := conf.Tencent.Auth.CorpSecret
 	Token, err := TokenGet(CorpId, CorpSecret)
 	log.Printf("%#v", M)
+	fmt.Println("sendmessage", model.CONF)
 	businessType, businessName, err := StrRegexp(M.Name, businessNameSlice)
 	if err != nil {
 		panic(err.Error())
 	}
+	M.BInfo.BusinesName = businessName
+	M.BInfo.BusinesType = businessType
+	ElasticPostData(M)
 	data := make(map[string]interface{})
 	var buinessuser string
 	usertemp := BusinessUser(businessType, conf)
