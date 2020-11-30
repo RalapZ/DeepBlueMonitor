@@ -34,6 +34,7 @@ var Conf model.Config
 
 func InitEsClient() {
 	var ctx = context.Background()
+	//Url := []string{"http://10.10.8.151:9200/"}
 	Url := []string{"http://10.10.8.151:9200/"}
 	IndexName := common.IndexName
 	Mapping := common.Mapping
@@ -53,6 +54,7 @@ func InitEsClient() {
 
 func Execute() {
 	//读取配置文件
+	//filename := "C:/code/DeepBlueMonitor/conf/application.yaml"
 	filename := "C:/code/DeepBlueMonitor/conf/application.yaml"
 	var businessName []string
 	Conf.ReadConfig(filename)
