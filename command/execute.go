@@ -35,14 +35,16 @@ var Conf model.Config
 func InitEsClient() {
 	var ctx = context.Background()
 	Url := []string{"http://10.10.8.151:9200/"}
+	IndexName := common.IndexName
+	Mapping := common.Mapping
 	common.ESClientConn(Url)
 	ESClient := common.ESClient
-	exists, err := ESClient.IndexExists(common.IndexName).Do(ctx)
+	exists, err := ESClient.IndexExists(IndexName).Do(ctx)
 	if err != nil {
 		panic(err)
 	}
 	if !exists {
-		_, err := ESClient.CreateIndex(common.IndexName).BodyString(common.Mapping).Do(ctx)
+		_, err := ESClient.CreateIndex(IndexName).BodyString(Mapping).Do(ctx)
 		if err != nil {
 			panic(err)
 		}

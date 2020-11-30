@@ -27,7 +27,6 @@ import (
 )
 
 var ESClient *elastic.Client
-var indexName = "skywalkinginfor"
 var IndexName = "skywalkinginfor"
 var ctx = context.Background()
 
